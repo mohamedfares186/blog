@@ -1,3 +1,12 @@
+import type { Request } from "express";
+
+interface UserRequest extends Request {
+  user?: {
+    userId: string;
+    role: string;
+  };
+}
+
 interface environment {
   ENV: string;
   PORT: number;
@@ -9,3 +18,4 @@ const env: environment = {
 };
 
 export default env;
+export { type UserRequest };
