@@ -1,0 +1,40 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node --watch dist/server.js",
+    "dev": "node --import=tsx --watch src/server.ts",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
+  },
+  "keywords": [],
+  "author": "Mohamed Fares",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.9.2",
+    "eslint": "^9.39.0",
+    "globals": "^16.4.0",
+    "jest": "^30.2.0",
+    "jiti": "^2.6.1",
+    "supertest": "^7.1.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2"
+  }
+}
