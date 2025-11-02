@@ -6,6 +6,8 @@ import { logger } from "./middleware/logger.ts";
 
 const { PORT } = env;
 
+import "./models/index.ts";
+
 app.listen(PORT, "0.0.0.0", async () => {
   await dbConnection();
   logger.info(`Server is running on port: ${PORT}`);
