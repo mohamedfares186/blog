@@ -1,24 +1,30 @@
 import { Op } from "sequelize";
 import User from "../../users/models/users.model.ts";
-import UserRepository, {
-  type UserInterface,
-} from "../../users/repositories/contract/users.repository.ts";
+import UserRepository from "../../users/repositories/contract/users.repository.ts";
+import type { UserType } from "../../../types/user.ts";
 
 class UserRepoImpl extends UserRepository {
-  protected override async create(user: UserInterface): Promise<User> {
-    return await User.create({ user });
+  public override async create(user: UserType): Promise<User> {
+    const { firstName, lastName, email, username, password, dateOfBirth } =
+      user;
+    return await User.create({
+      firstName,
+      lastName,
+      email,
+      username,
+      password,
+      dateOfBirth,
+    });
   }
 
-  protected override async findSafe(user: UserInterface): Promise<User | null> {
+  public override async findSafe(user: UserType): Promise<User | null> {
     const { email, username } = user;
     return await User.findOne({
       where: { [Op.or]: [{ email }, { username }] },
     });
   }
 
-  protected override async findUnsafe(
-    user: UserInterface
-  ): Promise<User | null> {
+  public override async findUnsafe(user: UserType): Promise<User | null> {
     const { email, username } = user;
     return await User.findOne({
       where: { [Op.or]: [{ email }, { username }] },
@@ -28,15 +34,15 @@ class UserRepoImpl extends UserRepository {
     });
   }
 
-  protected override async update(
+  public override async update(
     password: string,
-    user: UserInterface
+    user: UserType
   ): Promise<[number]> {
     const { userId } = user;
     return await User.update({ password }, { where: { userId } });
   }
 
-  protected override async delete(user: UserInterface): Promise<number> {
+  public override async delete(user: UserType): Promise<number> {
     const { userId } = user;
     return await User.destroy({ where: { userId } });
   }

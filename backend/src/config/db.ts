@@ -9,7 +9,7 @@ const PRODUCTION: boolean = ENV === "production" && !!DATABASE_URL;
 
 const database: SequelizeOptions = {
   dialect: (PRODUCTION ? "postgres" : "sqlite") as Dialect,
-  storage: PRODUCTION ? String(DATABASE_URL) : "database/dev.sqlite3",
+  storage: PRODUCTION ? (DATABASE_URL as string) : "database/dev.sqlite3",
 };
 
 const sequelize = new Sequelize(database);

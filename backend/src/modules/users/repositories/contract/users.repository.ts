@@ -1,29 +1,15 @@
 import User from "../../models/users.model.ts";
-
-interface UserInterface {
-  userId: string;
-  firstName?: string;
-  lastName?: string;
-  email: string;
-  username: string;
-  password?: string;
-  roleId?: string;
-  dateOfBirth?: Date;
-  isVerified: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import type { UserType } from "../../../../types/user.ts";
 
 abstract class UserRepository {
-  protected abstract create(user: UserInterface): Promise<User>;
-  protected abstract findSafe(user: UserInterface): Promise<User | null>;
-  protected abstract findUnsafe(user: UserInterface): Promise<User | null>;
+  protected abstract create(user: UserType): Promise<User>;
+  protected abstract findSafe(user: UserType): Promise<User | null>;
+  protected abstract findUnsafe(user: UserType): Promise<User | null>;
   protected abstract update(
     password: string,
-    user: UserInterface
+    user: UserType
   ): Promise<[number]>;
-  protected abstract delete(user: UserInterface): Promise<number>;
+  protected abstract delete(user: UserType): Promise<number>;
 }
 
 export default UserRepository;
-export type { UserInterface };

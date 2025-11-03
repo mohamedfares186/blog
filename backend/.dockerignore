@@ -5,6 +5,7 @@ dist/
 
 .env
 .env.*
+test/
 
 database/
 migrations/
@@ -21,5 +22,6 @@ README.md
 .gitignore
 
 Dockerfile
+DockerFile
 docker-compose.*
 .dockerignore

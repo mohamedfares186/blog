@@ -1,23 +1,17 @@
 import jwt from "jsonwebtoken";
-import env from "../config/env.ts";
 import crypto from "crypto";
+import env from "../config/env.ts";
+import type { UserType } from "../types/user.ts";
 
 const { JWT } = env;
 
-interface User {
-  userId: string;
-  role?: string;
-  permissions?: string;
-  isVerified?: boolean;
-}
-
 class Tokens {
-  static access(user: User): string {
-    const { userId, role, isVerified } = user;
+  static access(user: UserType): string {
+    const { userId, roleId, isVerified } = user;
     return jwt.sign(
       {
         userId,
-        role,
+        roleId,
         isVerified,
       },
       JWT,
@@ -25,7 +19,7 @@ class Tokens {
     );
   }
 
-  static refresh(user: User): string {
+  static refresh(user: UserType): string {
     const { userId } = user;
     return jwt.sign({ userId }, JWT, { expiresIn: "7d" });
   }

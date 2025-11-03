@@ -1,5 +1,5 @@
 import { logger } from "./logger.ts";
-import type { UserRequest } from "../config/env.ts";
+import type { UserRequest } from "../types/request.ts";
 import type { NextFunction, Response } from "express";
 
 interface ResponseError extends Error {

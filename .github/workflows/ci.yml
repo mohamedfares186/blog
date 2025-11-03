@@ -21,3 +21,11 @@ jobs:
 
       - name: Run Lint
         run: cd backend/ && npm run lint
+
+      - name: Type Check
+        run: cd backend/ && npx tsc --noEmit
+
+      - name: Run DockerFile
+        run: cd backend/ && docker build -f DockerFile
+
+

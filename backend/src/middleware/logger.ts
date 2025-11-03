@@ -1,6 +1,6 @@
-import type { Response, NextFunction } from "express";
+import type { NextFunction } from "express";
 import { createLogger, format, transports } from "winston";
-import type { UserRequest } from "../config/env.ts";
+import type { UserRequest, UserResponse } from "../types/request.ts";
 
 const { combine, timestamp, json, colorize, printf } = format;
 
@@ -49,7 +49,11 @@ const logger = createLogger({
   ],
 });
 
-const requestLogger = (req: UserRequest, res: Response, next: NextFunction) => {
+const requestLogger = (
+  req: UserRequest,
+  res: UserResponse,
+  next: NextFunction
+) => {
   const { method, url, hostname } = req;
   const userId: string = req.user?.userId || "Anonymous";
   const role: string = req.user?.role || "Guest";
@@ -62,10 +66,10 @@ const requestLogger = (req: UserRequest, res: Response, next: NextFunction) => {
     const statusCode: number = res.statusCode;
 
     const response = `
-      Status Code: ${statusCode}
+      Status Code: ${statusCode} - ${res.statusMessage}
       User: ${userId}
       Role: ${role}
-      Duration: ${duration}
+      Duration: ${duration}ms
     `;
 
     if (statusCode >= 500) {

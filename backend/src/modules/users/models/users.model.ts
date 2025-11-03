@@ -55,12 +55,17 @@ User.init(
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    roleId: {
-      type: DataTypes.UUID,
+    // roleId: {
+    //   type: DataTypes.UUID,
+    //   allowNull: false,
+    //   references: { model: "Roles", key: "roleId" },
+    //   onDelete: "CASCADE",
+    //   onUpdate: "CASCADE",
+    // },
+    role: {
+      type: DataTypes.STRING,
       allowNull: false,
-      references: { model: "Roles", key: "roleId" },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
+      defaultValue: "user",
     },
     isVerified: {
       type: DataTypes.BOOLEAN,

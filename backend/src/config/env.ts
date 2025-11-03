@@ -1,34 +1,14 @@
-import type { Request } from "express";
+import type { EnvironmentType } from "../types/environment.ts";
 
-interface UserRequest extends Request {
-  user?: {
-    userId: string;
-    role: string;
-    isVerified: boolean;
-  };
-}
-
-interface environment {
-  ENV: string;
-  PORT: number;
-  JWT: string;
-  DATABASE_URL?: string;
-  EMAIL_HOST?: string;
-  EMAIL_PORT?: string;
-  EMAIL_USER?: string;
-  EMAIL_PASS?: string;
-}
-
-const env: environment = {
-  ENV: String(process.env.NODE_ENV) || "development",
-  PORT: Number(process.env.PORT) || 5000,
-  JWT: String(process.env.JWT_SECRET),
-  DATABASE_URL: String(process.env.DATABASE_URL),
-  EMAIL_HOST: String(process.env.EMAIL_HOST),
-  EMAIL_PORT: String(process.env.EMAIL_PORT),
-  EMAIL_USER: String(process.env.EMAIL_USER),
-  EMAIL_PASS: String(process.env.EMAIL_PASS),
+const env: EnvironmentType = {
+  ENV: (process.env.NODE_ENV as string) || "development",
+  PORT: (process.env.PORT as unknown as number) || 5000,
+  JWT: process.env.JWT_SECRET as string,
+  DATABASE_URL: process.env.DATABASE_URL as string,
+  EMAIL_HOST: process.env.EMAIL_HOST as string,
+  EMAIL_PORT: process.env.EMAIL_PORT as string,
+  EMAIL_USER: process.env.EMAIL_USER as string,
+  EMAIL_PASS: process.env.EMAIL_PASS as string,
 };
 
 export default env;
-export { type UserRequest };

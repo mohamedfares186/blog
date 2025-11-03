@@ -1,6 +1,6 @@
 import type { NextFunction, Response } from "express";
 import rateLimit, { type Options } from "express-rate-limit";
-import type { UserRequest } from "../config/env.ts";
+import type { UserRequest } from "../types/request.ts";
 import { logger } from "./logger.ts";
 
 const rateLimitHandler = (
@@ -30,10 +30,10 @@ const rateLimitHandler = (
 };
 
 const skipRequests = (): boolean => {
-  if (process.env.NODE_ENV === "development") {
-    return true;
+  if (process.env.NODE_ENV === "production") {
+    return false;
   }
-  return false;
+  return true;
 };
 
 const limiter = rateLimit({
