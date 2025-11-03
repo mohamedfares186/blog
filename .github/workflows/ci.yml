@@ -26,6 +26,6 @@ jobs:
         run: cd backend/ && npx tsc --noEmit
 
       - name: Run DockerFile
-        run: cd backend/ && docker build -f DockerFile
+        run: cd backend/ && docker buildx build -f DockerFile
 
 
