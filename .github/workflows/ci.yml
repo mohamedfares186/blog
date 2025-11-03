@@ -25,7 +25,7 @@ jobs:
       - name: Type Check
         run: cd backend/ && npx tsc --noEmit
 
-      - name: Run DockerFile
-        run: cd backend/ && docker buildx build -f DockerFile
+      - name: Build Docker Image
+        run: cd backend/ && docker build -f DockerFile -t blog-backend:latest .
 
 
