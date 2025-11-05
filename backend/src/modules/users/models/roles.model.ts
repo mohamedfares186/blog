@@ -32,13 +32,13 @@ Role.init(
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
     tableName: "Roles",
     timestamps: true,
-    indexes: [{ unique: true, fields: ["title", "level"] }],
+    indexes: [{ unique: true, fields: ["roleId", "title", "level"] }],
     sequelize,
   }
 );

@@ -8,6 +8,7 @@ dist/
 
 database/
 migrations/
+seeders/
 *.db
 *.sqlite
 *.sqlite3

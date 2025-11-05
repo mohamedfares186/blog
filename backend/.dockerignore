@@ -9,6 +9,7 @@ test/
 
 database/
 migrations/
+seeders/
 *.db
 *.sqlite
 *.sqlite3

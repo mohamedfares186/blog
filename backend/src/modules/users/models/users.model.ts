@@ -6,6 +6,7 @@ import {
 } from "sequelize";
 import sequelize from "../../../config/db.ts";
 import type { UUID } from "crypto";
+import Role from "./roles.model.ts";
 
 class User extends Model {
   declare userId: CreateOptions<UUID>;
@@ -55,17 +56,12 @@ User.init(
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    // roleId: {
-    //   type: DataTypes.UUID,
-    //   allowNull: false,
-    //   references: { model: "Roles", key: "roleId" },
-    //   onDelete: "CASCADE",
-    //   onUpdate: "CASCADE",
-    // },
-    role: {
-      type: DataTypes.STRING,
+    roleId: {
+      type: DataTypes.UUID,
       allowNull: false,
-      defaultValue: "user",
+      references: { model: "Roles", key: "roleId" },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     isVerified: {
       type: DataTypes.BOOLEAN,
@@ -83,5 +79,13 @@ User.init(
     sequelize,
   }
 );
+
+Role.hasMany(User, {
+  foreignKey: "roleId",
+});
+
+User.belongsTo(Role, {
+  foreignKey: "roleId",
+});
 
 export default User;
