@@ -19,6 +19,6 @@ import auth from "./modules/auth/routes/auth.route.ts";
 
 app.use("/api/auth", auth);
 
-app.use(error);
+app.use(error as express.ErrorRequestHandler);
 
 export default app;

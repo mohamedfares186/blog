@@ -1,11 +1,11 @@
 import { Op } from "sequelize";
 import User from "../../users/models/users.model.ts";
 import UserRepository from "../../users/repositories/contract/users.repository.ts";
-import type { UserType } from "../../../types/user.ts";
 import Role from "../../users/models/roles.model.ts";
+import type { RegisterCredentials } from "../../../types/credentials.ts";
 
 class UserRepoImpl extends UserRepository {
-  public override async create(user: UserType): Promise<User> {
+  public override async create(user: RegisterCredentials): Promise<User> {
     const { firstName, lastName, email, username, password, dateOfBirth } =
       user;
     const defaultRole = await Role.findOne({
@@ -30,20 +30,9 @@ class UserRepoImpl extends UserRepository {
     });
   }
 
-  public override async findSafe(user: UserType): Promise<User | null> {
-    const { email, username } = user;
-    return await User.findOne({
-      where: { [Op.or]: [{ email }, { username }] },
-      include: [
-        {
-          model: Role,
-          attributes: ["level"],
-        },
-      ],
-    });
-  }
-
-  public override async findUnsafe(user: UserType): Promise<User | null> {
+  public override async findUnsafe(
+    user: RegisterCredentials
+  ): Promise<User | null> {
     const { email, username } = user;
     return await User.findOne({
       where: { [Op.or]: [{ email }, { username }] },
@@ -59,17 +48,29 @@ class UserRepoImpl extends UserRepository {
     });
   }
 
+  public override async findByUsername(
+    username: string | undefined
+  ): Promise<User | null> {
+    return await User.findOne({
+      where: { username },
+      attributes: {
+        include: ["password"],
+      },
+      include: [
+        {
+          model: Role,
+          attributes: ["level"],
+        },
+      ],
+    });
+  }
+
   public override async update(
     password: string,
-    user: UserType
+    user: User
   ): Promise<[number]> {
     const { userId } = user;
     return await User.update({ password }, { where: { userId } });
-  }
-
-  public override async delete(user: UserType): Promise<number> {
-    const { userId } = user;
-    return await User.destroy({ where: { userId } });
   }
 }
 

@@ -1,14 +1,17 @@
 import type { NextFunction, Response } from "express";
-import rateLimit, { type Options } from "express-rate-limit";
+import rateLimit, {
+  type Options,
+  type RateLimitExceededEventHandler,
+} from "express-rate-limit";
 import type { UserRequest } from "../types/request.ts";
 import { logger } from "./logger.ts";
 
-const rateLimitHandler = (
-  req: UserRequest,
+const rateLimitHandler: RateLimitExceededEventHandler = (
+  req,
   res: Response,
   next: NextFunction,
   options: Options
-) => {
+): Response => {
   const error = {
     status: "error",
     message: "Too many requests, please try again later",
@@ -22,7 +25,7 @@ const rateLimitHandler = (
     userAgent: req.get("User-Agent"),
     url: req.originalUrl,
     method: req.method,
-    userId: req.user?.userId || "anonymous",
+    userId: (req as UserRequest).user?.userId || "anonymous",
     timestamp: new Date().toISOString(),
   });
 

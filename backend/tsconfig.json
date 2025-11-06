@@ -10,6 +10,7 @@
     "module": "nodenext",
     "target": "es2022",
     "types": [],
+    "typeRoots": ["node_modules/@types", "./src/@types"],
 
     // Other Outputs
     "sourceMap": true,

@@ -1,15 +1,10 @@
-import {
-  Model,
-  DataTypes,
-  type DateDataType,
-  type CreateOptions,
-} from "sequelize";
+import { Model, DataTypes, type DateDataType } from "sequelize";
 import sequelize from "../../../config/db.ts";
 import type { UUID } from "crypto";
 import Role from "./roles.model.ts";
 
 class User extends Model {
-  declare userId: CreateOptions<UUID>;
+  declare userId: UUID;
   declare firstName: string;
   declare lastName: string;
   declare email: string;

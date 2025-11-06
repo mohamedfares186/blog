@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
 interface UserRequest extends Request {
-  user?: {
+  user: {
     userId: string;
     role: string;
     isVerified: boolean;

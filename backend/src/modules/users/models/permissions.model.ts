@@ -21,11 +21,16 @@ Permission.init(
     action: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+    },
+    access: {
+      type: DataTypes.ENUM("self", "admin", "anonymous"),
+      allowNull: false,
+      defaultValue: "anonymous",
     },
     category: {
       type: DataTypes.ENUM("user", "post", "comment"),
       allowNull: false,
+      unique: true,
     },
     description: {
       type: DataTypes.STRING,
@@ -35,7 +40,10 @@ Permission.init(
   {
     tableName: "Permissions",
     timestamps: true,
-    indexes: [{ unique: true, fields: ["action"] }, { fields: ["category"] }],
+    indexes: [
+      { fields: ["action", "access"] },
+      { unique: true, fields: ["category"] },
+    ],
     sequelize,
   }
 );

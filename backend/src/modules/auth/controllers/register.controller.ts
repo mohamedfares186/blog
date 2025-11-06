@@ -1,6 +1,11 @@
+import Tokens from "../../../lib/token.ts";
+import env from "../../../config/env.ts";
 import { logger } from "../../../middleware/logger.ts";
 import RegisterService from "../services/register.service.ts";
 import type { Request, Response } from "express";
+import sendEmail from "../../../lib/email.ts";
+
+const { ENV, SECURE } = env;
 
 class RegisterController {
   constructor(protected registration = new RegisterService()) {
@@ -21,6 +26,7 @@ class RegisterController {
         !dateOfBirth
       )
         return res.status(400).json({ message: "All fields are required" });
+
       const newUser = await this.registration.register({
         firstName,
         lastName,
@@ -35,13 +41,39 @@ class RegisterController {
           .status(400)
           .json({ message: "Something went wrong, please try again later!" });
 
+      const token = Tokens.secure(newUser.userId as string, SECURE as string);
+
+      const link = `http://localhost:5000/api/auth/verify-email/${token}`;
+
+      await sendEmail(
+        newUser.email,
+        "Verify your Email",
+        `Click this link to verify your email: ${link}`
+      );
+
+      const accessToken = Tokens.access(newUser);
+      const refreshToken = Tokens.refresh(newUser.userId);
+
+      res.cookie("access-token", accessToken, {
+        httpOnly: true,
+        secure: ENV === "production",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60,
+      });
+      res.cookie("refresh-token", refreshToken, {
+        httpOnly: true,
+        secure: ENV === "production",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+      });
+
       return res
         .status(201)
         .json({ message: "Registered successfully, please verify your email" });
     } catch (error) {
       logger.error(`Error User Register: ${error}`);
-      if (error === "Invalid Email or Username")
-        return res.status(400).json({ message: error });
+      if (res.statusCode >= 400 && res.statusCode < 500)
+        return res.status(res.statusCode).json({ message: error });
       return res.status(500).json({ message: "Something went wrong" });
     }
   }
