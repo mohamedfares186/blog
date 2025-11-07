@@ -1,11 +1,16 @@
 import type { Request, Response } from "express";
+import type { JwtPayload } from "jsonwebtoken";
 
 interface UserRequest extends Request {
-  user: {
-    userId: string;
-    role: string;
-    isVerified: boolean;
-  };
+  user?:
+    | {
+        userId: string;
+        roleId: string;
+        isVerified: boolean;
+        iat?: number;
+        exp?: number;
+      }
+    | JwtPayload;
 }
 
 interface UserResponse extends Response {

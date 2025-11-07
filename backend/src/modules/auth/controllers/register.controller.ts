@@ -12,7 +12,7 @@ class RegisterController {
     this.registration = registration;
   }
 
-  async register(req: Request, res: Response): Promise<Response> {
+  register = async (req: Request, res: Response): Promise<Response> => {
     const { firstName, lastName, email, username, password, dateOfBirth } =
       req.body;
 
@@ -76,7 +76,7 @@ class RegisterController {
         return res.status(res.statusCode).json({ message: error });
       return res.status(500).json({ message: "Something went wrong" });
     }
-  }
+  };
 }
 
 export default RegisterController;

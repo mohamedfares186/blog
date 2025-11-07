@@ -11,7 +11,7 @@ class LoginController {
     this.user = user;
   }
 
-  async login(req: Request, res: Response): Promise<Response> {
+  login = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { username, password } = req.body;
 
@@ -49,7 +49,7 @@ class LoginController {
       logger.error(`Error logging user in: ${error}`);
       return res.status(500).json({ message: "Internal server error" });
     }
-  }
+  };
 }
 
 export default LoginController;

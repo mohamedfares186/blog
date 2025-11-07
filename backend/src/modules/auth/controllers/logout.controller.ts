@@ -7,7 +7,7 @@ class LogoutController {
     this.session = session;
   }
 
-  async logout(req: Request, res: Response): Promise<Response> {
+  logout = async (req: Request, res: Response): Promise<Response> => {
     try {
       const token = req.cookies["refresh-token"];
       if (!token) return res.status(401).json({ message: "Unauthorized" });
@@ -24,7 +24,7 @@ class LogoutController {
       logger.error(`Error logging user out: ${error}`);
       return res.status(500).json({ message: "Internal server error" });
     }
-  }
+  };
 }
 
 export default LogoutController;
