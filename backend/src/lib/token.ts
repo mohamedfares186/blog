@@ -34,13 +34,19 @@ class Tokens {
     return `${random}.${userId}.${timeStamp}.${hmac}`;
   }
 
-  static validate(token: string, secret: string, expire: number): boolean {
+  static validate(
+    token: string,
+    secret: string,
+    expire: number
+  ): string | boolean {
     const split = token.split(".");
 
     if (split.length !== 4) return false;
 
     const [random, userId, timeStamp, hmac] = split;
     const now = Date.now();
+
+    if (!userId) return false;
 
     if (Number(now) - Number(timeStamp) > Number(expire)) return false;
 
@@ -51,7 +57,7 @@ class Tokens {
 
     if (validHmac !== hmac) return false;
 
-    return true;
+    return userId;
   }
 }
 

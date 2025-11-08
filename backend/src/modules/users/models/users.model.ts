@@ -1,4 +1,4 @@
-import { Model, DataTypes, type DateDataType } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import sequelize from "../../../config/db.ts";
 import type { UUID } from "crypto";
 import Role from "./roles.model.ts";
@@ -10,7 +10,7 @@ class User extends Model {
   declare email: string;
   declare username: string;
   declare password: string;
-  declare dateOfBirth: DateDataType;
+  declare dateOfBirth: Date;
   declare roleId: string;
   declare isVerified: boolean;
 }

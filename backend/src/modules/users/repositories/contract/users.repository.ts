@@ -6,10 +6,15 @@ abstract class UserRepository {
   protected abstract findUnsafe(
     user: RegisterCredentials
   ): Promise<User | null>;
+  protected abstract findSafe(userId: string): Promise<User | null>;
 
   protected abstract findByUsername(username: string): Promise<User | null>;
+  protected abstract findByEmail(email: string): Promise<User | null>;
 
-  protected abstract update(password: string, user: User): Promise<[number]>;
+  protected abstract update(
+    password: string,
+    userId: string
+  ): Promise<[number]>;
 }
 
 export default UserRepository;

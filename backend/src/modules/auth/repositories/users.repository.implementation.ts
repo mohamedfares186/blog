@@ -48,6 +48,10 @@ class UserRepoImpl extends UserRepository {
     });
   }
 
+  public override async findSafe(userId: string): Promise<User | null> {
+    return await User.findOne({ where: { userId } });
+  }
+
   public override async findByUsername(
     username: string | undefined
   ): Promise<User | null> {
@@ -64,12 +68,16 @@ class UserRepoImpl extends UserRepository {
       ],
     });
   }
+  public override async findByEmail(email: string): Promise<User | null> {
+    return await User.findOne({
+      where: { email },
+    });
+  }
 
   public override async update(
     password: string,
-    user: User
+    userId: string
   ): Promise<[number]> {
-    const { userId } = user;
     return await User.update({ password }, { where: { userId } });
   }
 }

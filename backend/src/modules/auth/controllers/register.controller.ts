@@ -3,9 +3,8 @@ import env from "../../../config/env.ts";
 import { logger } from "../../../middleware/logger.ts";
 import RegisterService from "../services/register.service.ts";
 import type { Request, Response } from "express";
-import sendEmail from "../../../lib/email.ts";
 
-const { ENV, SECURE } = env;
+const { ENV } = env;
 
 class RegisterController {
   constructor(protected registration = new RegisterService()) {
@@ -40,16 +39,6 @@ class RegisterController {
         return res
           .status(400)
           .json({ message: "Something went wrong, please try again later!" });
-
-      const token = Tokens.secure(newUser.userId as string, SECURE as string);
-
-      const link = `http://localhost:5000/api/auth/verify-email/${token}`;
-
-      await sendEmail(
-        newUser.email,
-        "Verify your Email",
-        `Click this link to verify your email: ${link}`
-      );
 
       const accessToken = Tokens.access(newUser);
       const refreshToken = Tokens.refresh(newUser.userId);

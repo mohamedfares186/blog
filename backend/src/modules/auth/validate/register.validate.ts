@@ -27,10 +27,7 @@ const registerValidation = [
     .isString()
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long")
-    .matches(
-      // eslint-disable-next-line
-      /(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).*/
-    )
+    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)
     .withMessage(
       "Password must include at least one letter, one number and one special character"
     ),

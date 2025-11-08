@@ -1,10 +1,12 @@
 import sequelize from "../../../config/db.ts";
 import { DataTypes, Model } from "sequelize";
 import type { UUID } from "crypto";
+import Role from "./roles.model.ts";
 
 class Permission extends Model {
   declare permissionId: UUID;
   declare action: string;
+  declare roleId: UUID;
   declare category: string;
   declare description: string;
 }
@@ -22,15 +24,16 @@ Permission.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    access: {
-      type: DataTypes.ENUM("self", "admin", "anonymous"),
+    roleId: {
+      type: DataTypes.UUID,
       allowNull: false,
-      defaultValue: "anonymous",
+      references: { model: "Roles", key: "roleId" },
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
     },
     category: {
       type: DataTypes.ENUM("user", "post", "comment"),
       allowNull: false,
-      unique: true,
     },
     description: {
       type: DataTypes.STRING,
@@ -40,12 +43,17 @@ Permission.init(
   {
     tableName: "Permissions",
     timestamps: true,
-    indexes: [
-      { fields: ["action", "access"] },
-      { unique: true, fields: ["category"] },
-    ],
+    indexes: [{ fields: ["action", "roleId", "category"] }],
     sequelize,
   }
 );
+
+Role.hasMany(Permission, {
+  foreignKey: "roleId",
+});
+
+Permission.belongsTo(Role, {
+  foreignKey: "roleId",
+});
 
 export default Permission;

@@ -1,18 +1,13 @@
 import sequelize from "../../../config/db.ts";
-import {
-  DataTypes,
-  Model,
-  type CreateOptions,
-  type DateDataType,
-} from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import type { UUID } from "crypto";
 import User from "./users.model.ts";
 
 class Session extends Model {
-  declare sessionId: CreateOptions<UUID>;
-  declare userId: CreateOptions<UUID>;
+  declare sessionId: UUID;
+  declare userId: UUID;
   declare token: string;
-  declare expiresAt: DateDataType;
+  declare expiresAt: Date;
   declare isRevoked: boolean;
 }
 

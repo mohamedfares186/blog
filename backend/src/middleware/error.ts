@@ -15,7 +15,7 @@ const error = (
   next: NextFunction
 ) => {
   const userId = req.user?.userId || "Anonymous";
-  const role = req.user?.role || "Guest";
+  const role = req.user?.roleId || "Guest";
   const { message, stack, statusCode, status } = err;
   const { method, url, hostname } = req;
 
@@ -36,7 +36,9 @@ const error = (
     logger.warn(`Client Error: ${error}`);
   }
 
-  return res.status(err.statusCode).json({ message: err.message });
+  return res
+    .status(err.statusCode || 500)
+    .json({ message: err.message || "Internal server error" });
 };
 
 export default error;

@@ -1,18 +1,16 @@
+import { logger } from "../middleware/logger.ts";
 import Role from "../modules/users/models/roles.model.ts";
 
-const defaultRoles = async () => {
+const Roles = async () => {
   try {
-    await Role.create({
-      title: "admin",
-      level: 9999,
-    });
-    await Role.create({
-      title: "user",
-      level: 1234,
-    });
+    return await Role.bulkCreate([
+      { title: "admin", level: 9999 },
+      { title: "user", level: 1234 },
+    ]);
   } catch (error) {
-    console.log(error);
+    logger.error(`Error initiating default roles: ${error}`);
+    throw error;
   }
 };
 
-defaultRoles();
+export default Roles;

@@ -4,6 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
 import type User from "../../users/models/users.model.ts";
 import type { RegisterCredentials } from "../../../types/credentials.ts";
+import Tokens from "../../../lib/token.ts";
+import sendEmail from "../../../lib/email.ts";
+import env from "../../../config/env.ts";
+
+const { SECURE } = env;
 
 class RegisterService {
   constructor(protected users = new UserRepoImpl()) {
@@ -43,6 +48,16 @@ class RegisterService {
 
       if (!newUser)
         throw new Error("Something went wrong, please try again later!");
+
+      const token = Tokens.secure(newUser.userId as string, SECURE as string);
+
+      const link = `http://localhost:5000/api/auth/email/${token}`;
+
+      await sendEmail(
+        newUser.email,
+        "Verify your Email",
+        `Click this link to verify your email: ${link}`
+      );
 
       return newUser;
     } catch (error) {
