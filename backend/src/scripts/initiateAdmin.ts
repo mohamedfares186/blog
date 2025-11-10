@@ -1,6 +1,5 @@
 import readline from "readline";
 import { logger } from "../middleware/logger.ts";
-import UserRepoImpl from "../modules/auth/repositories/users.repository.implementation.ts";
 import { v4 as uuidv4 } from "uuid";
 import { Role, User } from "../models/index.ts";
 import type { RegisterCredentials } from "../types/credentials.ts";
@@ -8,13 +7,11 @@ import bcrypt from "bcryptjs";
 
 class AdminUser {
   constructor(
-    protected user = new UserRepoImpl(),
     protected rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     })
   ) {
-    this.user = user;
     this.rl = rl;
   }
   async prompt(question: string): Promise<string> {
@@ -41,6 +38,10 @@ class AdminUser {
     const passwordRegex =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     return passwordRegex.test(password);
+  }
+  validateDate(date: string): boolean {
+    const dateRegex = /^(?:\d{4})-(?:\d{2})-(?:\d{2})/;
+    return dateRegex.test(date);
   }
 
   async AdminCredentials() {
@@ -70,7 +71,7 @@ class AdminUser {
         continue;
       }
 
-      const checkUser = await this.user.findSafe(email);
+      const checkUser = await User.findOne({ where: { email } });
 
       if (checkUser) {
         logger.error("Email is not available");
@@ -92,7 +93,7 @@ class AdminUser {
         continue;
       }
 
-      const checkUser = await this.user.findByUsername(username);
+      const checkUser = await User.findOne({ where: { username } });
 
       if (checkUser) {
         logger.error("Username is not available");
@@ -117,14 +118,19 @@ class AdminUser {
 
     while (true) {
       repeatPassword = await this.prompt(`Confirm password: `);
-      if (password !== repeatPassword) {
+      if (repeatPassword !== password) {
         logger.error(`passwords doesn't match`);
         continue;
       }
       break;
     }
     while (true) {
-      dateOfBirth = (await this.prompt("Admin date of birth: ")).trim();
+      dateOfBirth = await this.prompt(`Date of birth: `);
+      const validate = this.validateDate(dateOfBirth);
+      if (!validate) {
+        logger.error(`Invalid Date Format`);
+        continue;
+      }
       break;
     }
     return { firstName, lastName, email, username, password, dateOfBirth };
@@ -162,8 +168,11 @@ class AdminUser {
 
   async Run() {
     try {
-      const credentials = await this.AdminCredentials();
-      return await this.SaveAdminCredentials(credentials);
+      const { password, ...adminUser } = await this.AdminCredentials();
+      return await this.SaveAdminCredentials({
+        ...adminUser,
+        password: password as string,
+      });
     } catch (error) {
       logger.error(`Error initiating Admin user: ${error}`);
       process.exit(1);

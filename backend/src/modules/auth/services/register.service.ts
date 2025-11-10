@@ -1,20 +1,16 @@
-import UserRepoImpl from "../repositories/users.repository.implementation.ts";
 import { logger } from "../../../middleware/logger.ts";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
-import type User from "../../users/models/users.model.ts";
+import User from "../../users/models/users.model.ts";
 import type { RegisterCredentials } from "../../../types/credentials.ts";
 import Tokens from "../../../lib/token.ts";
 import sendEmail from "../../../lib/email.ts";
 import env from "../../../config/env.ts";
+import { Op } from "sequelize";
 
 const { SECURE } = env;
 
 class RegisterService {
-  constructor(protected users = new UserRepoImpl()) {
-    this.users = users;
-  }
-
   async register(credentials: RegisterCredentials): Promise<User> {
     const { firstName, lastName, email, username, password, dateOfBirth } =
       credentials;
@@ -29,14 +25,19 @@ class RegisterService {
       )
         throw new Error("All fields are required");
 
-      const check = await this.users.findUnsafe(credentials);
+      const check = await User.findOne({
+        where: {
+          [Op.or]: [{ email }, { username }],
+        },
+        include: ["password"],
+      });
 
       if (check) throw new Error("Invalid Email or Username");
 
       const passwordHash: string = await bcrypt.hash(password, 12);
       const userId: string = uuidv4();
 
-      const newUser: User = await this.users.create({
+      const newUser: User = await User.create({
         userId,
         firstName,
         lastName,

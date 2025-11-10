@@ -16,8 +16,10 @@ app.use(cors());
 app.use(limiter);
 
 import auth from "./modules/auth/routes/auth.route.ts";
+import post from "./modules/posts/routes/post.route.ts";
 
-app.use("/api/auth", auth);
+app.use("/api/v1", auth);
+app.use("/api/v1", post);
 
 app.use(error as express.ErrorRequestHandler);
 

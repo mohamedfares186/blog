@@ -1,15 +1,11 @@
 import sendEmail from "../../../lib/email.ts";
 import Tokens from "../../../lib/token.ts";
 import env from "../../../config/env.ts";
-import UserRepoImpl from "../repositories/users.repository.implementation.ts";
+import User from "../../users/models/users.model.ts";
 
 const { SECURE } = env;
 
 class EmailService {
-  constructor(protected user = new UserRepoImpl()) {
-    this.user = user;
-  }
-
   async send(userId: string, email: string) {
     const token = Tokens.secure(userId as string, SECURE as string);
 
@@ -22,7 +18,7 @@ class EmailService {
     );
   }
   async verify(userId: string, token: string): Promise<boolean> {
-    const check = await this.user.findSafe(userId);
+    const check = await User.findOne({ where: { userId } });
     if (!check) throw new Error("Invalid Credentials");
     if (check.isVerified === true) throw new Error("Email is already verified");
     const validateToken = Tokens.validate(token, SECURE, 36000000);
